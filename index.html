@@ -1,11 +1,31 @@
 <!DOCTYPE html>
-<html>
-<head><title>Project Break</title></head>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de Tareas FullStack</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 20px; }
+        .container { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h1 { color: #1a73e8; text-align: center; }
+        .input-box { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; }
+        button { padding: 10px 15px; background: #1a73e8; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        button:hover { background: #1557b0; }
+        ul { list-style: none; padding: 0; }
+        li { background: #fff; border-bottom: 1px solid #eee; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .del-btn { background: #d93025; font-size: 12px; }
+    </style>
+</head>
 <body>
-    <h1>Mis Tareas</h1>
-    <input type="text" id="taskInput">
-    <button onclick="addTask()">Añadir</button>
-    <ul id="taskList"></ul>
+    <div class="container">
+        <h1>Mis Tareas</h1>
+        <div class="input-box">
+            <input type="text" id="taskInput" placeholder="Nueva tarea...">
+            <button onclick="addTask()">Añadir</button>
+        </div>
+        <ul id="taskList"></ul>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
