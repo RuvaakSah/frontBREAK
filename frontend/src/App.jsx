@@ -1,121 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import './App.css';
+
+// ⚠️ Cambia esto por tu URL de Render después del deploy
+const API_URL = "https://backbreak.onrender.com";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [cards, setCards] = useState([]);
+  const [form, setForm] = useState({ name: '', game: '', price: '', image: '' });
+
+  useEffect(() => { fetchCards(); }, []);
+
+  const fetchCards = async () => {
+    const res = await axios.get(API_URL);
+    setCards(res.data);
+  };
+
+  const handleAdd = async (e) => {
+    e.preventDefault();
+    await axios.post(API_URL, form);
+    setForm({ name: '', game: '', price: '', image: '' });
+    fetchCards();
+  };
+
+  const handleDelete = async (id) => {
+    await axios.delete(`${API_URL}/${id}`);
+    fetchCards();
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="App">
+      <h1>Cardmarket Clone 🃏</h1>
+      
+      <form onSubmit={handleAdd} className="card-form">
+        <input placeholder="Nombre Carta" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required />
+        <input placeholder="Juego (Pokémon...)" value={form.game} onChange={e => setForm({...form, game: e.target.value})} required />
+        <input type="number" placeholder="Precio" value={form.price} onChange={e => setForm({...form, price: e.target.value})} required />
+        <input placeholder="URL Imagen" value={form.image} onChange={e => setForm({...form, image: e.target.value})} />
+        <button type="submit">Publicar Carta</button>
+      </form>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      <div className="card-grid">
+        {cards.map(card => (
+          <div key={card._id} className="card-item">
+            <img src={card.image || 'https://via.placeholder.com/150'} alt={card.name} />
+            <h3>{card.name}</h3>
+            <p>{card.game}</p>
+            <span>{card.price} €</span>
+            <button onClick={() => handleDelete(card._id)}>Eliminar</button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
